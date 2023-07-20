@@ -44,7 +44,7 @@ keymap("n", "<leader>h", "<cmd>nohlsearch<CR>", opts)
 keymap("n", "<S-q>", "<cmd>Bdelete!<CR>", opts)
 
 -- Better paste
-keymap("v", "p", '"_dP', opts)
+keymap("v", "p", "P", opts)
 
 -- Insert --
 -- Press jk or `` fast to exit insert mode
@@ -74,7 +74,7 @@ keymap("n", "<leader>gb", "<cmd>Git blame_line<CR>", opts)
 
 -- Comment
 keymap("n", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", opts)
-keymap("x", "<leader>/", '<ESC><CMD>lua require("Comment.api").toggle.linewise(vim.fn.visualmode())<CR>')
+keymap("x", "<leader>/", "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", opts)
 
 -- DAP
 keymap("n", "<leader>db", "<cmd>lua require'dap'.toggle_breakpoint()<cr>", opts)
@@ -104,3 +104,5 @@ keymap("i", "jj", "<ESC>", opts)
 
 -- Remove trailing whitespace
 -- keymap("n", "<F5>", "let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>")
+-- Lsp
+keymap("n", "<leader>lf", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", opts)
