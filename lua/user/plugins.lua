@@ -64,6 +64,15 @@ return packer.startup(function(use)
   use { "folke/tokyonight.nvim", commit = "66bfc2e8f754869c7b651f3f47a2ee56ae557764" }
   use { "lunarvim/darkplus.nvim", commit = "13ef9daad28d3cf6c5e793acfc16ddbf456e1c83" }
 
+  use {
+    "folke/drop.nvim",
+    event = "VimEnter",
+    config = function()
+      math.randomseed(os.time())
+      local theme = ({ "stars", "snow"})[math.random(1, 2)]
+      require("drop").setup { theme = theme }
+    end,
+  }
   -- cmp plugins
   use { "hrsh7th/nvim-cmp", commit = "b0dff0ec4f2748626aae13f011d1a47071fe9abc" } -- The completion plugin
   use { "hrsh7th/cmp-buffer", commit = "3022dbc9166796b644a841a02de8dd1cc1d311fa" } -- buffer completions
@@ -84,9 +93,31 @@ return packer.startup(function(use)
   use { "jose-elias-alvarez/null-ls.nvim", commit = "c0c19f32b614b3921e17886c541c13a72748d450" } -- for formatters and linters
   use { "RRethy/vim-illuminate", commit = "a2e8476af3f3e993bb0d6477438aad3096512e42" }
 
-  -- Telescope
-  use { "nvim-telescope/telescope.nvim", commit = "76ea9a898d3307244dce3573392dcf2cc38f340f" }
+  use { "towolf/vim-helm",  commit="c2e7b85711d410e1d73e64eb5df7b70b1c4c10eb"}
 
+-- Show LSP errors
+use {
+  "folke/trouble.nvim",
+  requires = "nvim-tree/nvim-web-devicons",
+  config = function()
+    require("trouble").setup {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      use_diagnostic_signs = true,
+    }
+  end
+}
+  -- Telescope
+  use {
+    "nvim-telescope/telescope.nvim",
+    commit = "76ea9a898d3307244dce3573392dcf2cc38f340f",
+    requires = {
+      { "nvim-telescope/telescope-live-grep-args.nvim" },
+    },
+    config = function()
+      require("telescope").load_extension("live_grep_args")
+    end
+  }
   -- Treesitter
   use {
     "nvim-treesitter/nvim-treesitter",
@@ -100,6 +131,13 @@ return packer.startup(function(use)
   use { "mfussenegger/nvim-dap", commit = "6b12294a57001d994022df8acbe2ef7327d30587" }
   use { "rcarriga/nvim-dap-ui", commit = "1cd4764221c91686dcf4d6b62d7a7b2d112e0b13" }
   use { "ravenxrz/DAPInstall.nvim", commit = "8798b4c36d33723e7bba6ed6e2c202f84bb300de" }
+
+
+  -- Go
+  use { "fatih/vim-go"}
+
+  -- Java
+  use { "mfussenegger/nvim-jdtls", commit = "96e3978c3fdae3950f6ccda548775e8b8952f74a"}
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins

@@ -28,6 +28,11 @@ keymap("n", "<C-Down>", ":resize +2<CR>", opts)
 keymap("n", "<C-Left>", ":vertical resize -2<CR>", opts)
 keymap("n", "<C-Right>", ":vertical resize +2<CR>", opts)
 
+
+-- Toggleterm
+keymap("n", "<leader>tt" , ":ToggleTerm direction=horizontal<CR>", opts)
+keymap("n", "<leader>tb", ":ToggleTerm direction=tab<CR>", opts)
+keymap("n", "<leader>tf" , ":ToggleTerm direction=float<CR>", opts)
 -- Navigate buffers
 keymap("n", "<S-l>", ":bnext<CR>", opts)
 keymap("n", "<S-h>", ":bprevious<CR>", opts)
@@ -42,8 +47,9 @@ keymap("n", "<S-q>", "<cmd>Bdelete!<CR>", opts)
 keymap("v", "p", '"_dP', opts)
 
 -- Insert --
--- Press jk fast to enter
+-- Press jk or `` fast to exit insert mode
 keymap("i", "jk", "<ESC>", opts)
+keymap("i", "``", "<ESC>", opts)
 
 -- Visual --
 -- Stay in indent mode
@@ -60,9 +66,11 @@ keymap("n", "<leader>ff", ":Telescope find_files<CR>", opts)
 keymap("n", "<leader>ft", ":Telescope live_grep<CR>", opts)
 keymap("n", "<leader>fp", ":Telescope projects<CR>", opts)
 keymap("n", "<leader>fb", ":Telescope buffers<CR>", opts)
+keymap('n', '<leader>fs', ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>", { noremap = true })
 
 -- Git
 keymap("n", "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", opts)
+keymap("n", "<leader>gb", "<cmd>Git blame_line<CR>", opts)
 
 -- Comment
 keymap("n", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", opts)
@@ -78,3 +86,21 @@ keymap("n", "<leader>dr", "<cmd>lua require'dap'.repl.toggle()<cr>", opts)
 keymap("n", "<leader>dl", "<cmd>lua require'dap'.run_last()<cr>", opts)
 keymap("n", "<leader>du", "<cmd>lua require'dapui'.toggle()<cr>", opts)
 keymap("n", "<leader>dt", "<cmd>lua require'dap'.terminate()<cr>", opts)
+
+
+-- Quitting nvim with Leader keymaps --
+keymap("n", "<leader>w", ":w<CR>", opts)
+keymap("i", "jjq", "<ESC>:q<CR>", opts)
+keymap("i", "jjo", "<ESC>:q!<CR>", opts)
+keymap("i", "jjw", "<ESC>:wq<CR>", opts)
+keymap("n", "<leader>q", ":q<CR>", opts)
+keymap("n", "<leader>`", ":q!<CR>", opts)
+keymap("n", ":W", ":w<CR>", opts)
+
+-- Trouble toggle for  LSP linter error messages and other LSP stuff
+keymap("n", "<leader>l", ":TroubleToggle<cr>", opts)
+
+keymap("i", "jj", "<ESC>", opts)
+
+-- Remove trailing whitespace
+-- keymap("n", "<F5>", "let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>")
