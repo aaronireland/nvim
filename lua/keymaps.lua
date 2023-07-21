@@ -98,9 +98,9 @@ keymap("n", "<leader>`", ":q!<CR>", opts)
 keymap("n", ":W", ":w<CR>", opts)
 
 -- Trouble toggle for  LSP linter error messages and other LSP stuff
-keymap("n", "<leader>l", ":TroubleToggle<cr>", opts)
+keymap("n", "<leader>k", ":TroubleToggle<cr>", opts)
 
-keymap("i", "jj", "<ESC>", opts)
+keymap("i", "jjj", "<ESC>", opts)
 
 -- Remove trailing whitespace
 -- keymap("n", "<F5>", "let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>")

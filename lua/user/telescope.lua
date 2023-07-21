@@ -1,25 +1,24 @@
 local M = {
   "nvim-telescope/telescope.nvim",
   commit = "40c31fdde93bcd85aeb3447bb3e2a3208395a868",
-  event = "Bufenter",
+  lazy = false,
   cmd = { "Telescope" },
   dependencies = {
     {
       "ahmedkhalf/project.nvim",
+      "nvim-telescope/telescope-live-grep-args.nvim",
     },
   },
 }
 
 local actions = require "telescope.actions"
 
-telescope.setup {
+M.opts = {
   pickers = {
     find_files = {
       hidden = true
     }
   },
-
-M.opts = {
   defaults = {
     prompt_prefix = " ",
     selection_caret = " ",
@@ -38,4 +37,14 @@ M.opts = {
   },
 }
 
+function M.config()
+  local status_ok, telescope = pcall(require, "telescope")
+  if not status_ok then
+    return
+  end
+
+  telescope.load_extension("live_grep_args")
+end
+
 return M
+
