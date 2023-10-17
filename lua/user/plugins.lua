@@ -27,14 +27,18 @@ return {
   { "rafamadriz/friendly-snippets", version = "*" }, -- a bunch of snippets to use
 
   -- LSP
-  -- use { "williamboman/nvim-lsp-installer", version = "*" } -- simple to use language server installer
-  { "RRethy/vim-illuminate", version = "*" },
+  -- { "neovim/nvim-lspconfig", lazy=false, version="*"},
+  --{ "williamboman/mason-lspconfig.nvim", lazy=false, version = "*" },
+  { "RRethy/vim-illuminate", lazy=false, version = "*" },
 
-  { "towolf/vim-helm",  version="*"},
+  { "towolf/vim-helm", lazy=false, version="*"},
 
   -- Go
   { "fatih/vim-go", lazy=false, version="*"},
 
   -- Java
   { "mfussenegger/nvim-jdtls", lazy=false, version = "*"},
+
+  -- Markdown
+  { "davidgranstrom/nvim-markdown-preview", lazy=false, version = "*"},
 }

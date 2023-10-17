@@ -1,8 +1,7 @@
+
 local M = {
   "neovim/nvim-lspconfig",
   commit = "649137cbc53a044bffde36294ce3160cb18f32c7",
-  lazy = false,
-  event = { "BufRead" },
   dependencies = {
     {
       "hrsh7th/cmp-nvim-lsp",
@@ -51,12 +50,18 @@ function M.config()
 
     server = vim.split(server, "@")[1]
 
+
     local require_ok, conf_opts = pcall(require, "settings." .. server)
     if require_ok then
-      Opts = vim.tbl_deep_extend("force", conf_opts, Opts)
+      if server == "helm_ls" then
+        Opts = vim.tbl_deep_extend("keep", vim.lsp, conf_opts)
+        lspconfig['helm_ls'].setup(Opts)
+      else
+        Opts = vim.tbl_deep_extend("force", conf_opts, Opts)
+        lspconfig[server].setup(Opts)
+      end
     end
 
-    lspconfig[server].setup(Opts)
   end
 
   local signs = {

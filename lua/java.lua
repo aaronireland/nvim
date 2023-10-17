@@ -1,140 +1,33 @@
-local status, jdtls = pcall(require, "jdtls")
-if not status then
-  return
+local M = {}
+
+function Start_jdt()
+  require("jdtls").start_or_attach(require("settings.jdtls_2").get_config())
 end
 
 local home = os.getenv "HOME"
-local workspace_path = home .. "/.local/share/lunarvim/jdtls-workspace/"
+local workspace_path = home .. "/.local/share/nvim/jdtls/workspace/"
 local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
 local workspace_dir = workspace_path .. project_name
 
-local extendedClientCapabilities = jdtls.extendedClientCapabilities
-extendedClientCapabilities.resolveAdditionalTextEditsSupport = true
-
-vim.builtin.dap.active = true
-local bundles = {}
-local mason_path = vim.fn.glob(vim.fn.stdpath "data" .. "/mason/")
-vim.list_extend(bundles, vim.split(vim.fn.glob(mason_path .. "packages/java-test/extension/server/*.jar"), "\n"))
-vim.list_extend(
-  bundles,
-  vim.split(
-    vim.fn.glob(mason_path .. "packages/java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-*.jar"),
-    "\n"
-  )
-)
--- See `:help vim.lsp.start_client` for an overview of the supported `config` options.
-
-local config = {
-  -- The command that starts the language server
-  -- See: https://github.com/eclipse/eclipse.jdt.ls#running-from-the-command-line
-  cmd = {
-
-    -- 💀
-    'java', -- or '/path/to/java17_or_newer/bin/java'
-            -- depends on if `java` is in your $PATH env variable and if it points to the right version.
-
-    '-Declipse.application=org.eclipse.jdt.ls.core.id1',
-    '-Dosgi.bundles.defaultStartLevel=4',
-    '-Declipse.product=org.eclipse.jdt.ls.core.product',
-    '-Dlog.protocol=true',
-    '-Dlog.level=ALL',
-    '-Xmx1g',
-    '--add-modules=ALL-SYSTEM',
-    '--add-opens', 'java.base/java.util=ALL-UNNAMED',
-    '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
-
-    -- 💀
-    '-jar', '/opt/homebrew/Cellar/jdtls/1.25.0/libexec/plugins/org.eclipse.equinox.launcher.cocoa.macosx.x86_64_1.2.700.v20221108-1024.jar',
-         -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                       ^^^^^^^^^^^^^^
-         -- Must point to the                                                     Change this to
-         -- eclipse.jdt.ls installation                                           the actual version
-
-
-    -- 💀
-    '-configuration', '/opt/homebrew/Cellar/jdtls/1.25.0/libexec/config_mac',
-                    -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^        ^^^^^^
-                    -- Must point to the                      Change to one of `linux`, `win` or `mac`
-                    -- eclipse.jdt.ls installation            Depending on your system.
-
-
-    -- 💀
-    -- See `data directory configuration` section in the README
-    '-data', workspace_dir
-  },
-
-  -- 💀
-  -- This is the default if not provided, you can remove it. Or adjust as needed.
-  -- One dedicated LSP server & client will be started per unique root_dir
-  root_dir = require('jdtls.setup').find_root({'.git', 'mvnw', 'gradlew'}),
-
-  -- Here you can configure eclipse.jdt.ls specific settings
-  -- See https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
-  -- for a list of options
-  settings = {
-    java = {
-      eclipse = {
-        downloadSources = true,
-      },
-      configuration = {
-        updateBuildConfiguration = "interactive",
-      },
-      maven = {
-        downloadSources = true,
-      },
-      referencesCodeLens = {
-        enabled = true,
-      },
-      references = {
-        includeDecompiledSources = true,
-      },
-      inlayHints = {
-        parameterNames = {
-          enabled = "all", -- literals, all, none
-        },
-      },
-      format = {
-        enabled = false,
-      },
-    },
-    signatureHelp = { enabled = true },
-    extendedClientCapabilities = extendedClientCapabilities,
-  },
-
-  init_options = {
-    bundles = bundles,
-  },
-  -- Language server `initializationOptions`
-  -- You need to extend the `bundles` with paths to jar files
-  -- if you want to use additional eclipse.jdt.ls plugins.
-  --
-  -- See https://github.com/mfussenegger/nvim-jdtls#java-debug-installation
-  --
-}
-
-config["on_attach"] = function(client, bufnr)
-  local _, _ = pcall(vim.lsp.codelens.refresh)
- require("jdtls").setup_dap({ hotcodereplace = "auto" })
- require("lvim.lsp").on_attach(client, bufnr)
-  local status_ok, jdtls_dap = pcall(require, "jdtls.dap")
-  if status_ok then
-    jdtls_dap.setup_dap_main_class_configs()
-  end
+M.setup = function()
+  vim.api.nvim_create_autocmd({ "FileType"}, {
+    pattern = "java",
+    callback = function()
+      Start_jdt()
+    end,
+    desc = "Start java language server"
+  })
 end
 
-vim.api.nvim_create_autocmd({ "BufWritePost" }, {
-  pattern = { "*.java" },
-  callback = function()
-    local _, _ = pcall(vim.lsp.codelens.refresh)
-  end,
-})
-
-local formatters = require "lvim.lsp.null-ls.formatters"
-formatters.setup {
-  { command = "google_java_format", filetypes = { "java" } },
+local null_ls = require("null-ls")
+local java_formatter = {
+  method = null_ls.methods.FORMATTING,
+  filetypes = { "java" },
+  generator = null_ls.formatter({
+    command = "google_java_format"
+  }),
 }
--- This starts a new client & server,
--- or attaches to an existing client & server depending on the `root_dir`.
-require('jdtls').start_or_attach(config)
+null_ls.register(java_formatter)
 
 local status_ok, which_key = pcall(require, "which-key")
 if not status_ok then
@@ -183,3 +76,5 @@ local vmappings = {
 which_key.register(mappings, opts)
 which_key.register(vmappings, vopts)
 which_key.register(vmappings, vopts)
+
+return M

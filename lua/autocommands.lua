@@ -1,3 +1,11 @@
+-- helm charts
+vim.api.nvim_create_autocmd({'BufNewFile', 'BufRead'} , {
+    pattern = {'*/apps/templates/*.yaml', '*/charts/*.yaml', '*/chart/*.yaml', 'deployment*.yaml', 'Chart.yaml', 'values.yaml','_helpers.tpl', 'config-map.yaml', 'external-secret.yaml', 'hpa.yaml', 'ingress.yaml', 'secret.yaml', 'service.yaml', 'serviceaccount.yaml'},
+    callback = function()
+          vim.opt_local.filetype = 'helm'
+    end,
+})
+
 vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = { "qf", "help", "man", "lspinfo", "spectre_panel" },
   callback = function()
@@ -50,12 +58,4 @@ vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
       vim.cmd "IlluminatePauseBuf"
     end
   end,
-})
-
--- helm charts
-vim.api.nvim_create_autocmd({'BufNewFile', 'BufRead'} , {
-    pattern = {'*/apps/templates/*.yaml', '*/charts/*.yaml', '*/chart/*.yaml', 'deployment*.yaml', 'Chart.yaml', 'values.yaml','_helpers.tpl', 'config-map.yaml', 'external-secret.yaml', 'hpa.yaml', 'ingress.yaml', 'secret.yaml', 'service.yaml', 'serviceaccount.yaml'},
-    callback = function()
-          vim.opt_local.filetype = 'helm'
-    end,
 })
